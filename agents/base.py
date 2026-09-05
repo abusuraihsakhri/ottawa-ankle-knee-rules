@@ -33,6 +33,20 @@ class ResourceLimitExceededException(Exception):
     pass
 
 
+def safe_resolve_path(filepath: str, must_exist: bool = False) -> str:
+    """Validate and resolve a file path, preventing path traversal attacks."""
+    import pathlib
+    try:
+        resolved = pathlib.Path(filepath).resolve()
+    except (OSError, ValueError) as e:
+        raise SecurityException(f"Invalid file path: {e}")
+
+    if must_exist and not resolved.exists():
+        raise FileNotFoundError(f"File not found: {filepath}")
+
+    return str(resolved)
+
+
 def assert_no_phi(text: str) -> None:
     if not text:
         return
@@ -57,7 +71,13 @@ class PHIGuard:
 class AuditTrail:
     """Cryptographic Tamper-Evident HMAC-SHA256 Audit Trail."""
     def __init__(self, secret_key: Optional[str] = None):
-        self.secret_key = (secret_key or os.getenv("AUDIT_SECRET_KEY", "ottawa-ankle-knee-rules-master-audit-key-2026")).encode("utf-8")
+        key = secret_key or os.getenv("AUDIT_SECRET_KEY")
+        if not key:
+            raise SecurityException(
+                "AUDIT_SECRET_KEY environment variable is required. "
+                "Set it before running the application."
+            )
+        self.secret_key = key.encode("utf-8")
         self.logs: List[Dict[str, Any]] = []
 
     def log(self, actor: str, actor_tier: str, event_type: str, details: Dict[str, Any]) -> Dict[str, Any]:

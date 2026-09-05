@@ -11,7 +11,6 @@ License: MIT
 import argparse
 import csv
 import json
-import math
 import sys
 from typing import Dict, Any, List, Optional
 
@@ -65,8 +64,25 @@ def process_single(args) -> None:
     print(json.dumps(res, indent=2))
 
 
+def _safe_resolve_path(filepath: str, must_exist: bool = False) -> str:
+    """Validate and resolve a file path, preventing path traversal attacks."""
+    import pathlib
+    try:
+        resolved = pathlib.Path(filepath).resolve()
+    except (OSError, ValueError) as e:
+        raise ValueError(f"Invalid file path: {e}")
+
+    if must_exist and not resolved.exists():
+        raise FileNotFoundError(f"Input file not found: {filepath}")
+
+    return str(resolved)
+
+
 def process_batch(input_csv: str, output_csv: str) -> None:
-    with open(input_csv, mode="r", encoding="utf-8-sig") as f:
+    input_path = _safe_resolve_path(input_csv, must_exist=True)
+    output_path = _safe_resolve_path(output_csv)
+
+    with open(input_path, mode="r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         fieldnames = list(reader.fieldnames or [])
         rows = list(reader)
@@ -82,7 +98,7 @@ def process_batch(input_csv: str, output_csv: str) -> None:
         row_dict["clinical_recommendation"] = calc_res["clinical_recommendation"]
         out_rows.append(row_dict)
 
-    with open(output_csv, mode="w", encoding="utf-8", newline="") as f:
+    with open(output_path, mode="w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=out_fields)
         writer.writeheader()
         writer.writerows(out_rows)

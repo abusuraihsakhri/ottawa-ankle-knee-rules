@@ -3,12 +3,13 @@ Automated Pytest Test Suite for Ottawa Ankle Knee Rules.
 Domain: Clinical & Biomedical AI
 Standard: CAP / CLSI / ISO Standards
 """
+import os
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from agents.base import PHIGuard, AuditLogger, SecurityException
+from agents.base import PHIGuard, AuditLogger, SecurityException, safe_resolve_path
 from agents.models import SystemTaskPayload, UrgencyLevel, SystemIntegrityStatus
 from agents.workers import InvariantQCWorker, SafetyEscalationWorker, ProtocolConformanceWorker
 from agents.supervisor import SystemSupervisor
@@ -63,3 +64,48 @@ def test_supervisor_consensus_and_audit():
     assert main(["audit", "--task-id", "CLI-TEST-01"]) == 0
     assert main(["chat", "Explain", "specifications"]) == 0
     assert main(["verify-audit"]) == 0
+
+
+def test_safe_resolve_path():
+    """Test path traversal protection."""
+    # Valid path should resolve
+    valid = safe_resolve_path("test_file.txt")
+    assert isinstance(valid, str)
+
+    # Non-existent file with must_exist=True should raise
+    with pytest.raises(FileNotFoundError):
+        safe_resolve_path("/nonexistent/path/file.txt", must_exist=True)
+
+
+def test_batch_missing_file():
+    """Test batch processing with missing input file."""
+    from ottawa_rules import process_batch
+    with pytest.raises(FileNotFoundError):
+        process_batch("/nonexistent/input.csv", "output.csv")
+
+
+def test_audit_secret_key_required():
+    """Test that AUDIT_SECRET_KEY is required when not provided."""
+    from agents.base import AuditTrail
+    # Save original value
+    original = os.environ.get("AUDIT_SECRET_KEY")
+    try:
+        # Remove from environment
+        if "AUDIT_SECRET_KEY" in os.environ:
+            del os.environ["AUDIT_SECRET_KEY"]
+        # Should raise SecurityException when no key provided
+        with pytest.raises(SecurityException):
+            AuditTrail()
+    finally:
+        # Restore original value
+        if original is not None:
+            os.environ["AUDIT_SECRET_KEY"] = original
+
+
+def test_audit_trail_with_explicit_key():
+    """Test that AuditTrail works with an explicit key."""
+    from agents.base import AuditTrail
+    trail = AuditTrail(secret_key="test-key-for-testing")
+    entry = trail.log("test", "test_tier", "TEST_EVENT", {"data": "value"})
+    assert "current_hash" in entry
+    assert trail.verify_integrity() is True

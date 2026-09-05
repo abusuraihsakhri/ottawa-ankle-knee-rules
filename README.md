@@ -18,12 +18,23 @@
 
 ## 📖 What It Does
 
-Ottawa Ankle & Knee Rules Decision Engine
-Evaluates Ottawa criteria to rule out unnecessary radiography in acute ankle, midfoot, and knee injuries.
+Ottawa Ankle & Knee Rules Decision Engine evaluates clinical criteria to rule out unnecessary radiography in acute ankle, midfoot, and knee injuries. It provides a multi-worker agent architecture with PHI protection, cryptographic audit trails, and both CLI and REST API interfaces.
 
-Zero-dependency Python implementation with single and batch evaluation.
 Author: Dr. Abu Suraih Sakhri
 License: MIT
+
+---
+
+## 🚀 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/abusuraihsakhri/ottawa-ankle-knee-rules.git
+cd ottawa-ankle-knee-rules
+
+# Install dependencies
+pip install fastapi uvicorn pydantic pytest
+```
 
 ---
 
@@ -31,47 +42,50 @@ License: MIT
 
 ### 🔬 Analytical Functions
 
-- **`calculate_metrics()`**: Core domain algorithm for ottawa-ankle-knee-rules.
-- **`process_single()`** — calculates and validates process_single parameters.
-- **`process_batch()`** — calculates and validates process_batch parameters.
-- **`main()`** — calculates and validates main parameters.
+- **`calculate_metrics()`**: Core scoring algorithm that computes weighted scores and classifies results into risk tiers.
+- **`process_single()`**: Evaluates a single case with provided parameters.
+- **`process_batch()`**: Processes CSV files with multiple records (includes path traversal protection).
+- **`main()`**: CLI entry point with subcommands for single/batch evaluation.
 
----
+### 🤖 Multi-Worker Agent Architecture
 
-## 📐 Mathematical Formulation & Logic
-
-```text
-  score = primary_val
-  rounded_score = round(score, 2)
-  res = calculate_metrics(**kwargs)
-  calc_res = calculate_metrics(**r)
-```
+- **InvariantQCWorker**: Monitors primary metric thresholds and triggers alerts when exceeded.
+- **SafetyEscalationWorker**: Handles critical safety interlocks and emergency escalation.
+- **ProtocolConformanceWorker**: Detects protocol violations and discordant status descriptors.
 
 ---
 
 ## 💻 CLI Quickstart & Usage
 
-### 1. Guided Interactive Mode
+### 1. Single Case Evaluation
 ```bash
-python cli.py
+python ottawa_rules.py single --v1 12.0 --v2 4.0 --v3 2.0
 ```
 
-### 2. Direct Parameterized Evaluation
+### 2. Batch CSV Processing
 ```bash
-python cli.py --task-id <value> --target <value> --primary <value> --secondary <value>
+python ottawa_rules.py batch -i input.csv -o results.csv
 ```
 
-### Parameter Reference
-- `--task-id`: Specifies input measurement or parameter value.
-- `--target`: Specifies input measurement or parameter value.
-- `--primary`: Specifies input measurement or parameter value.
-- `--secondary`: Specifies input measurement or parameter value.
-- `--critical`: Specifies input measurement or parameter value.
-- `--status`: Specifies input measurement or parameter value.
-- `--input`: Specifies input measurement or parameter value.
-- `--output`: Specifies input measurement or parameter value.
+### 3. Enterprise CLI (requires AUDIT_SECRET_KEY)
+```bash
+# Set the audit secret key (required for HMAC-SHA256 audit trail)
+export AUDIT_SECRET_KEY="your-secure-audit-key"
 
-### Input Data Schema
+# Run audit evaluation
+python cli.py audit --task-id TASK-001 --primary 28.5 --secondary 14.2
+
+# Batch processing
+python cli.py batch -i input.csv -o results.csv
+
+# Verify audit trail integrity
+python cli.py verify-audit
+
+# Start REST API server
+python cli.py serve --host 127.0.0.1 --port 8000
+```
+
+### Input Data Schema (CSV)
 
 | Field | Description | Requirement |
 |:------|:------------|:------------|
@@ -84,8 +98,9 @@ python cli.py --task-id <value> --target <value> --primary <value> --secondary <
 
 ## 🛡️ Security & Enterprise Architecture
 
-* **Zero-PHI Outbound Interceptor:** Active AST and regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers.
-* **Tamper-Evident HMAC-SHA256 Audit Trail:** Chained, cryptographically signed logs for every evaluation and state transition.
+* **Zero-PHI Outbound Interceptor:** Active regex inspection blocking SSNs, MRNs, phone numbers, emails, DOBs, and patient identifiers.
+* **Tamper-Evident HMAC-SHA256 Audit Trail:** Chained, cryptographically signed logs for every evaluation. Requires `AUDIT_SECRET_KEY` environment variable.
+* **Path Traversal Protection:** All file operations validate and resolve paths to prevent directory traversal attacks.
 * **Air-Gapped LLM Reasoning Adapter:** Agnostic integration for local Ollama instances (`llama3`, `mistral`), Claude 3.5 Sonnet, GPT-4o, and deterministic test mocks.
 * **Active Learning Bayesian Calibration:** Dynamic tracker updating worker reliability weights and monitoring Brier calibration drift.
 * **FastAPI & Prometheus Telemetry:** Exposes OpenAPI 3.1 REST endpoints and operational Prometheus metrics (`/metrics`).
@@ -97,13 +112,17 @@ python cli.py --task-id <value> --target <value> --primary <value> --secondary <
 Run the automated test suite:
 
 ```bash
+# Set a test audit key
+export AUDIT_SECRET_KEY="test-audit-key"
+
+# Run all tests
 pytest -v
 ```
 
 Execute high-throughput batch simulation benchmarks:
 
 ```bash
-python simulator.py --tasks 1000 --concurrency 8
+python simulator.py 1000
 ```
 
 ---
@@ -112,5 +131,12 @@ python simulator.py --tasks 1000 --concurrency 8
 
 ```bash
 docker build -t ottawa-ankle-knee-rules .
-docker run -p 8000:8000 ottawa-ankle-knee-rules
+docker run -e AUDIT_SECRET_KEY="your-secure-key" -p 8000:8000 ottawa-ankle-knee-rules
+```
+
+Or using Docker Compose:
+
+```bash
+# Update docker-compose.yml with your secure AUDIT_SECRET_KEY
+docker-compose up -d
 ```

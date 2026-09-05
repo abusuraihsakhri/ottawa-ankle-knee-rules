@@ -1,7 +1,6 @@
 """
 Prometheus Operational Metrics Exporter for ottawa-ankle-knee-rules.
 """
-import time
 from typing import Dict, Any
 
 class SystemMetricsCollector:
