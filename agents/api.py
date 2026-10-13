@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+import os
 
 from clinical_rules import evaluate
 from .base import AuditLogger, PHIGuard, SecurityException
@@ -36,6 +37,12 @@ class ClinicalAssessment(BaseModel):
     unable_four_steps_at_assessment: StrictBool | None = None
 
 
+def require_legacy_demo():
+    """Legacy routes are disabled unless explicitly opted into for local testing."""
+    if os.getenv("ENABLE_LEGACY_DEMO_API", "").strip().lower() not in {"1", "true", "yes"}:
+        raise HTTPException(status_code=404, detail="Legacy demonstration API is disabled")
+
+
 class ChatRequest(BaseModel):
     query: str
 
@@ -65,12 +72,14 @@ def metrics():
 @app.post("/api/audit", deprecated=True)
 def api_audit(payload: SystemTaskPayload):
     """Legacy threshold-based demo; not an Ottawa clinical decision."""
+    require_legacy_demo()
     dossier = supervisor.process_task(payload)
     return dossier.to_dict()
 
 
 @app.post("/api/chat", deprecated=True)
 def api_chat(req: ChatRequest):
+    require_legacy_demo()
     try:
         return {"response": supervisor.query_supervisory_chat(req.query)}
     except SecurityException:
@@ -79,6 +88,7 @@ def api_chat(req: ChatRequest):
 
 @app.get("/api/audit/logs", deprecated=True)
 def api_audit_logs():
+    require_legacy_demo()
     return {"audit_trail": AuditLogger.get_trail(), "verified": AuditLogger.verify_integrity()}
 
 
