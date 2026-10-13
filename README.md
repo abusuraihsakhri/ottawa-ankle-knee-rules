@@ -22,7 +22,7 @@ The browser implementation uses plain JavaScript (no Python runtime, build tool,
 - **Midfoot:** Midfoot pain plus navicular tenderness, fifth metatarsal base tenderness, or the same four-step criterion.
 - **Knee:** Knee pain after acute injury plus age **55 or older**, fibular head tenderness, isolated patellar tenderness, inability to flex to 90°, or inability to bear weight for four steps at both time points.
 
-Positive findings are sufficient for a positive result. Missing relevant findings **never produce a negative result**. The tool uses four outcomes: `radiography_indicated`, `radiography_not_indicated`, `insufficient_information`, and `not_applicable`.
+If ankle and midfoot pain zones are both involved, assess **each zone separately**. Positive findings are sufficient for a positive result. Missing relevant findings **never produce a negative result**. The tool uses four outcomes: `radiography_indicated`, `radiography_not_indicated`, `insufficient_information`, and `not_applicable`.
 
 To avoid extrapolation, this implementation limits assessments to **adults aged 18 or older** with pain in the selected zone after recent nonpenetrating trauma (including twists and falls) and a reliable examination. Red flags, significant concomitant injury, an unreliable examination or persistent clinical concern warrant independent assessment regardless of the rule.
 
