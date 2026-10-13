@@ -1,55 +1,82 @@
 {
-  "suite_name": "Ottawa Ankle Knee Rules Golden Benchmark Test Suite",
-  "system_slug": "ottawa-ankle-knee-rules",
-  "standard_reference": "CAP / CLSI / NIST Standards",
+  "suite_name": "Ottawa Clinical Criteria Regression Cases",
+  "scope": "Adults with recent blunt injury and a reliable examination",
+  "references": [
+    "https://aci.health.nsw.gov.au/ecat/appendices/ottawa-ankle-adult",
+    "https://aci.health.nsw.gov.au/ecat/appendices/ottawa-knee"
+  ],
   "test_cases": [
     {
-      "case_id": "BENCH-01-NOMINAL",
-      "description": "Standard nominal flow with parameter values within normal physiological / cryptographic range.",
-      "payload": {
-        "task_id": "TASK-BENCH-01",
-        "target_identifier": "TARGET-CALIB-OK",
-        "primary_metric": 14.5,
-        "secondary_metric": 3.2,
-        "status_descriptor": "NOMINAL",
-        "is_critical_flag": false
+      "id": "ankle_negative",
+      "input": {
+        "site": "ankle",
+        "age": 34,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true,
+        "posterior_lateral_malleolus_tenderness": false,
+        "posterior_medial_malleolus_tenderness": false,
+        "unable_four_steps_immediately": false,
+        "unable_four_steps_at_assessment": false
       },
-      "expected_urgency": "ROUTINE",
-      "expected_integrity": "VALIDATED_OPTIMAL"
+      "expected_outcome": "radiography_not_indicated"
     },
     {
-      "case_id": "BENCH-02-ELEVATED-QC",
-      "description": "Primary metric exceeds operational boundary triggering InvariantQCWorker alert.",
-      "payload": {
-        "task_id": "TASK-BENCH-02",
-        "target_identifier": "TARGET-DEVIATION-02",
-        "primary_metric": 38.2,
-        "secondary_metric": 4.1,
-        "status_descriptor": "NOMINAL",
-        "is_critical_flag": false
+      "id": "ankle_positive",
+      "input": {
+        "site": "ankle",
+        "age": 40,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true,
+        "posterior_lateral_malleolus_tenderness": true
       },
-      "expected_urgency": "ELEVATED_RISK",
-      "expected_integrity": "DISCORDANT_ANOMALY"
+      "expected_outcome": "radiography_indicated"
     },
     {
-      "case_id": "BENCH-03-CRITICAL-STAT",
-      "description": "Emergency critical condition with secondary kinetics breach demanding closed-loop escalation.",
-      "payload": {
-        "task_id": "TASK-BENCH-03",
-        "target_identifier": "TARGET-CRITICAL-03",
-        "primary_metric": 18.0,
-        "secondary_metric": 19.5,
-        "status_descriptor": "DISCORDANT_ANOMALY",
-        "is_critical_flag": true
+      "id": "midfoot_positive",
+      "input": {
+        "site": "midfoot",
+        "age": 28,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true,
+        "navicular_tenderness": true
       },
-      "expected_urgency": "CRITICAL_STAT_PANIC",
-      "expected_integrity": "RECALIBRATION_REQUIRED"
+      "expected_outcome": "radiography_indicated"
     },
     {
-      "case_id": "BENCH-04-ADVERSARIAL-PHI-INJECTION",
-      "description": "Security adversarial test injecting raw patient MRN and name to verify zero-PHI outbound interceptor.",
-      "adversarial_prompt": "Patient John Doe MRN-994827 blood culture positive",
-      "expected_security_exception": true
+      "id": "knee_age_55",
+      "input": {
+        "site": "knee",
+        "age": 55,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true
+      },
+      "expected_outcome": "radiography_indicated"
+    },
+    {
+      "id": "knee_incomplete",
+      "input": {
+        "site": "knee",
+        "age": 32,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true
+      },
+      "expected_outcome": "insufficient_information"
+    },
+    {
+      "id": "pediatric_ineligible",
+      "input": {
+        "site": "ankle",
+        "age": 12,
+        "pain_present": true,
+        "acute_blunt_trauma": true,
+        "reliable_exam": true
+      },
+      "expected_outcome": "not_applicable"
     }
   ]
 }
