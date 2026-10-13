@@ -34,7 +34,7 @@ class ResourceLimitExceededException(Exception):
 
 
 def safe_resolve_path(filepath: str, must_exist: bool = False) -> str:
-    """Validate and resolve a file path, preventing path traversal attacks."""
+    """Resolve a user-specified local path (not a sandbox security boundary)."""
     import pathlib
     try:
         resolved = pathlib.Path(filepath).resolve()
@@ -112,7 +112,7 @@ class AuditTrail:
                 return False
             sign_string = "|".join(entry[field] for field in fields)
             expected = hmac.new(self.secret_key, sign_string.encode("utf-8"), hashlib.sha256).hexdigest()
-            if not hmac.compare_digest(entry.get("current_hash", ""), expected):
+            if not isinstance(entry.get("current_hash"), str) or not hmac.compare_digest(entry["current_hash"], expected):
                 return False
         return True
 
