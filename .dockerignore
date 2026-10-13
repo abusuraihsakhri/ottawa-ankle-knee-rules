@@ -1,0 +1,17 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+results.csv
+output.csv
+*.egg-info/
