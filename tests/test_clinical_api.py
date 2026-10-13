@@ -40,3 +40,15 @@ def test_api_serves_web_interface():
     assert client.get("/").status_code == 200
     assert "Ottawa Ankle" in client.get("/").text
     assert "function evaluate" in client.get("/app.js").text
+
+
+def test_legacy_demo_routes_disabled_by_default(monkeypatch):
+    monkeypatch.delenv("ENABLE_LEGACY_DEMO_API", raising=False)
+    assert client.get("/api/audit/logs").status_code == 404
+    assert client.post("/api/chat", json={"query": "hello"}).status_code == 404
+    assert client.post("/api/audit", json={}).status_code == 422  # schema still validates
+
+
+def test_legacy_demo_logs_opt_in(monkeypatch):
+    monkeypatch.setenv("ENABLE_LEGACY_DEMO_API", "true")
+    assert client.get("/api/audit/logs").status_code == 200
