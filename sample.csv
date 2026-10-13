@@ -1,4 +1,4 @@
-Patient_ID,v1,v2,v3
-PT-101,14.5,4.2,1.8
-PT-102,8.0,2.1,0.5
-PT-103,28.4,12.0,5.5
+site,age,pain_present,acute_blunt_trauma,reliable_exam,posterior_lateral_malleolus_tenderness,posterior_medial_malleolus_tenderness,navicular_tenderness,fifth_metatarsal_base_tenderness,fibular_head_tenderness,isolated_patellar_tenderness,cannot_flex_90,unable_four_steps_immediately,unable_four_steps_at_assessment
+ankle,35,yes,yes,yes,no,no,,,,,no,no,no
+midfoot,29,yes,yes,yes,,,yes,no,,,,no,no
+knee,61,yes,yes,yes,,,,,no,no,no,no,no
