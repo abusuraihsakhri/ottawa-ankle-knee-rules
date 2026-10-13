@@ -1,236 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ottawa Ankle Knee Rules — Operations Console</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #090d16;
-            --card: #111827;
-            --border: #1f293d;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 2rem;
-            min-height: 100vh;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .header-title h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
-        .header-title p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-        .badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: var(--accent-glow);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 1.5rem;
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-        input, select, textarea {
-            width: 100%;
-            padding: 0.65rem 0.9rem;
-            background: #0d1322;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-        .btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.4rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .btn:hover { background: #2563eb; }
-        .terminal {
-            background: #060911;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #10b981;
-            height: 380px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-        .metrics-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .metric-box {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .metric-val { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 0.25rem; }
-        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Offline adult Ottawa ankle, midfoot and knee radiography decision rules.">
+  <title>Ottawa Ankle, Foot & Knee Rules</title>
+  <style>
+    :root{font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;color:#14283b;background:#f4f7fb}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1080px;margin:auto;padding:28px 22px 64px}
+    header{border-bottom:1px solid #d6e1eb;padding-bottom:22px;margin-bottom:22px}h1{font-size:clamp(1.55rem,3vw,2.1rem);line-height:1.2;margin:0 0 8px}h2{font-size:1.15rem;margin:0 0 12px}p{margin:7px 0 0}
+    .intro{color:#475c70;max-width:80ch}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr);gap:20px;align-items:start}
+    .panel{background:white;border:1px solid #d4e0ea;border-radius:12px;padding:22px;box-shadow:0 3px 20px #26354e0a}
+    .field{margin-bottom:18px}.field>label,.question>label{display:block;font-weight:600;margin-bottom:7px;font-size:.94rem}
+    select,input{width:100%;background:white;border:1px solid #a6bacb;border-radius:7px;padding:10px 12px;font:inherit;color:inherit}
+    select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #1d72bb;outline-offset:2px}
+    fieldset{border:0;border-top:1px solid #e0e8f0;padding:16px 0 0;margin:5px 0 16px}legend{font-weight:700;padding-right:10px}
+    .question{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;align-items:center;margin:13px 0}
+    .question label{font-weight:400;margin:0}.question select{padding:8px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}button{border:1px solid #145990;border-radius:7px;background:#1264a3;color:white;padding:10px 18px;font:inherit;font-weight:650;cursor:pointer}
+    button.secondary{background:white;color:#174f7d;border-color:#afc5d9}button:disabled{opacity:.5;cursor:not-allowed}
+    #result{border-left:4px solid #93abc0;background:#f4f7fb;border-radius:5px;padding:15px;min-height:112px;overflow-wrap:anywhere}
+    #result[data-outcome='radiography_indicated']{border-color:#ba5c17;background:#fff8ef}
+    #result[data-outcome='radiography_not_indicated']{border-color:#177952;background:#f0faf6}
+    #result[data-outcome='insufficient_information'],#result[data-outcome='not_applicable'],#result[data-outcome='error']{border-color:#a56c18;background:#fffaf0}
+    aside p,aside li{color:#465b6c;font-size:.93rem}ul{padding-left:20px}li{margin:8px 0}small{color:#506477}
+    .references{margin-top:20px}.references a{color:#135b91;word-break:break-word}
+    @media(max-width:760px){main{padding:18px 12px 36px}.layout{grid-template-columns:1fr}.panel{padding:17px}.question{grid-template-columns:1fr}.question select{max-width:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important}}
+  </style>
+  <script src="./app.js" defer></script>
 </head>
 <body>
-
-    <div class="header">
-        <div class="header-title">
-            <h1>Ottawa Ankle Knee Rules</h1>
-            <p>Domain: Clinical & Cryptographic AI | Standard: CAP / CLSI / NIST Standards | LabMind-Atlas Architecture</p>
-        </div>
-        <div>
-            <span class="badge">Air-Gapped Active</span>
-            <span class="badge" style="background: rgba(16,185,129,0.2); color: #10b981; border-color: #10b981;">Zero-PHI Guard Active</span>
-        </div>
+  <main>
+    <header>
+      <h1>Ottawa Ankle, Foot & Knee Rules</h1>
+      <p class="intro">Adult acute injury radiography decision support. Evaluates published criteria without numerical severity scores, external services or patient identifiers.</p>
+    </header>
+    <div class="layout">
+      <section class="panel" aria-labelledby="assess-title">
+        <h2 id="assess-title">Clinical assessment</h2>
+        <form id="assessment">
+          <div class="field"><label for="site">Injury region</label><select id="site" name="site"><option value="ankle">Ankle (malleolar zone)</option><option value="midfoot">Midfoot</option><option value="knee">Knee</option></select></div>
+          <div class="field"><label for="age">Patient age in years</label><input id="age" name="age" type="number" min="0" max="120" step="1" required placeholder="Age"></div>
+          <fieldset><legend>Applicability</legend>
+            <div class="question"><label for="pain_present">Pain in the selected region?</label><select id="pain_present" required><option value="">Not assessed</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+            <div class="question"><label for="acute_blunt_trauma">Recent acute blunt injury?</label><select id="acute_blunt_trauma" required><option value="">Not assessed</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+            <div class="question"><label for="reliable_exam">Reliable examination, without exclusion factors?</label><select id="reliable_exam" required><option value="">Not assessed</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          </fieldset>
+          <fieldset><legend>Relevant Ottawa findings</legend><div id="findings"></div></fieldset>
+          <div class="actions"><button type="submit">Evaluate</button><button class="secondary" type="reset">Reset</button></div>
+        </form>
+      </section>
+      <aside class="panel" aria-labelledby="interpret-title">
+        <h2 id="interpret-title">Interpretation</h2>
+        <div id="result" role="status" aria-live="polite">Complete the criteria and select Evaluate.</div>
+        <p><button type="button" id="download" class="secondary" disabled>Export result (JSON)</button></p>
+        <h2 style="margin-top:24px">Clinical limitations</h2>
+        <ul>
+          <li>For adults aged 18 or older only in this application.</li>
+          <li>A positive rule indicates need for radiography, not a confirmed fracture.</li>
+          <li>A negative rule does not exclude ligament, tendon, neurovascular or other significant injury.</li>
+          <li>Consider urgent assessment for deformity, open injury, neurovascular deficit or other red flags regardless of the rule.</li>
+          <li>Four-step criterion requires inability at both time points; limping alone does not qualify.</li>
+        </ul>
+        <p><small>Runs locally in your browser. No network requests, analytics, persistent storage or patient identifiers.</small></p>
+      </aside>
     </div>
-
-    <div class="metrics-bar">
-        <div class="metric-box">
-            <div class="metric-label">System Status</div>
-            <div class="metric-val" style="color: var(--success);" id="m-status">OPTIMAL</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Tasks Processed</div>
-            <div class="metric-val" id="m-tasks">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Audit Blocks Signed</div>
-            <div class="metric-val" id="m-audit">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">PHI Interceptions</div>
-            <div class="metric-val" style="color: var(--accent);" id="m-phi">0</div>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h2>⚙️ Dispatch Distributed Component Audit</h2>
-            <div class="form-group">
-                <label>Task / Sample ID</label>
-                <input type="text" id="task_id" value="TASK-2026-LIVE-01">
-            </div>
-            <div class="form-group">
-                <label>Target Identifier</label>
-                <input type="text" id="target_id" value="SPECIMEN-ALPHA-77">
-            </div>
-            <div class="form-group">
-                <label>Primary Measurement / Value</label>
-                <input type="number" id="primary_metric" value="29.4" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Secondary Metric / Kinetic Index</label>
-                <input type="number" id="secondary_metric" value="14.8" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Status / Phenotype Descriptor</label>
-                <input type="text" id="status_descriptor" value="DISCORDANT_ANOMALY">
-            </div>
-            <div class="form-group">
-                <label><input type="checkbox" id="is_critical" checked> Trigger Emergency / Critical Flag</label>
-            </div>
-            <button class="btn" onclick="runAudit()">Execute Distributed Component Audit</button>
-        </div>
-
-        <div class="card">
-            <h2>📊 Real-Time Consensus Dossier & Audit Log</h2>
-            <div class="terminal" id="outputConsole">// Ottawa Ankle Knee Rules Operations Console Ready
-// Connection established with Air-Gapped Supervisor
-// Cryptographic HMAC-SHA256 audit ledger loaded.
-// Ready for live task payload dispatch...</div>
-        </div>
-    </div>
-
-    <script>
-        async function runAudit() {
-            const consoleEl = document.getElementById('outputConsole');
-            consoleEl.innerText = "// Dispatching task across specialized workers...
-// Invoking InvariantQCWorker, SafetyEscalationWorker, ProtocolWorker...";
-
-            const payload = {
-                task_id: document.getElementById('task_id').value,
-                target_identifier: document.getElementById('target_id').value,
-                primary_metric: parseFloat(document.getElementById('primary_metric').value),
-                secondary_metric: parseFloat(document.getElementById('secondary_metric').value),
-                status_descriptor: document.getElementById('status_descriptor').value,
-                is_critical_flag: document.getElementById('is_critical').checked
-            };
-
-            try {
-                const res = await fetch('/api/audit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                consoleEl.innerText = JSON.stringify(data, null, 2);
-                document.getElementById('m-tasks').innerText = parseInt(document.getElementById('m-tasks').innerText) + 1;
-                document.getElementById('m-audit').innerText = parseInt(document.getElementById('m-audit').innerText) + 1;
-            } catch (err) {
-                consoleEl.innerText = "// Offline / Simulation Output:\n" + JSON.stringify({
-                    dossier_id: "DOSSIER-SIM-" + Math.floor(Math.random()*10000),
-                    system: "ottawa-ankle-knee-rules",
-                    domain: "Clinical & Cryptographic AI",
-                    task_id: payload.task_id,
-                    overall_urgency: payload.is_critical_flag ? "CRITICAL_STAT_PANIC" : "ELEVATED_RISK",
-                    integrity_status: "DISCORDANT_ANOMALY",
-                    alerts: [
-                        { worker: "InvariantQCWorker", alert: "Primary metric exceeds upper reference bound" },
-                        { worker: "SafetyEscalationWorker", alert: "Critical emergency interlock flag active" }
-                    ],
-                    audit_hash: "HMAC_SHA256_e83f9a72b941d6c381f9"
-                }, null, 2);
-            }
-        }
-    </script>
+    <section class="panel references" aria-label="Clinical sources">
+      <h2>Criteria and references</h2>
+      <p>NSW Agency for Clinical Innovation: <a href="https://aci.health.nsw.gov.au/ecat/appendices/ottawa-ankle-adult" target="_blank" rel="noopener noreferrer">Ottawa ankle rules (adult)</a> and <a href="https://aci.health.nsw.gov.au/ecat/appendices/ottawa-knee" target="_blank" rel="noopener noreferrer">Ottawa knee rules (adult)</a>.</p>
+      <p><small>This educational decision aid has not undergone prospective clinical validation. Use professional judgment and applicable local protocols.</small></p>
+    </section>
+  </main>
 </body>
 </html>
