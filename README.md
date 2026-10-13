@@ -56,7 +56,7 @@ python cli.py serve --host 127.0.0.1 --port 8000
 
 `POST /api/clinical` accepts the fields used by the Python engine, as JSON booleans and optional nulls. Explore the generated schema at `/docs` or `/openapi.json`. Docker is supported using `docker build -t ottawa-rules .` and `docker run -e AUDIT_SECRET_KEY=... -p 127.0.0.1:8000:8000 ottawa-rules`.
 
-The repository also retains older `cli.py audit`, `chat`, generic worker modules, simulations and `/api/audit` endpoints for compatibility. **They are nonclinical demonstrations**, do not implement Ottawa rules, and should not be used to guide patient care. Unsupported model-provider names do not imply live integrations.
+The repository also retains older `cli.py audit`, `chat`, generic worker modules, simulations and `/api/audit` endpoints for compatibility. **They are nonclinical demonstrations**, do not implement Ottawa rules, and should not be used to guide patient care. The legacy REST routes `/api/audit`, `/api/chat` and `/api/audit/logs` are **disabled by default** to avoid exposing unauthenticated demonstration data. To test locally, set `ENABLE_LEGACY_DEMO_API=true` before starting the API, and do not expose those routes to the public internet. Unsupported model-provider names do not imply live integrations.
 
 ## Tests and privacy
 
