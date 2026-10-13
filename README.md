@@ -24,7 +24,7 @@ The browser implementation uses plain JavaScript (no Python runtime, build tool,
 
 Positive findings are sufficient for a positive result. Missing relevant findings **never produce a negative result**. The tool uses four outcomes: `radiography_indicated`, `radiography_not_indicated`, `insufficient_information`, and `not_applicable`.
 
-To avoid extrapolation, this implementation limits assessments to **adults aged 18 or older** with pain in the selected zone after recent blunt trauma and a reliable examination. Red flags, significant concomitant injury, an unreliable examination or persistent clinical concern warrant independent assessment regardless of the rule.
+To avoid extrapolation, this implementation limits assessments to **adults aged 18 or older** with pain in the selected zone after recent nonpenetrating trauma (including twists and falls) and a reliable examination. Red flags, significant concomitant injury, an unreliable examination or persistent clinical concern warrant independent assessment regardless of the rule.
 
 **References:** [NSW Agency for Clinical Innovation: Ottawa ankle rules (adult)](https://aci.health.nsw.gov.au/ecat/appendices/ottawa-ankle-adult) and [Ottawa knee rules (adult)](https://aci.health.nsw.gov.au/ecat/appendices/ottawa-knee).
 
