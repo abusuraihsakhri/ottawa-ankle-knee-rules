@@ -34,3 +34,9 @@ def test_api_rejects_invalid_types_and_sites():
 
 def test_openapi_exposes_clinical_endpoint():
     assert "/api/clinical" in client.get("/openapi.json").json()["paths"]
+
+
+def test_api_serves_web_interface():
+    assert client.get("/").status_code == 200
+    assert "Ottawa Ankle" in client.get("/").text
+    assert "function evaluate" in client.get("/app.js").text
