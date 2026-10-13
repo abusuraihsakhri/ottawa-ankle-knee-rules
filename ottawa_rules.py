@@ -15,6 +15,13 @@ def calculate_metrics(**kwargs):
     """
     return evaluate_record(kwargs)
 
+ 
+def _safe_csv_cell(value):
+    """Prevent formula execution when exported CSV is opened in spreadsheet tools."""
+    if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + value
+    return value
+
 
 def process_batch(input_csv: str, output_csv: str) -> int:
     source, destination = Path(input_csv).resolve(), Path(output_csv).resolve()
@@ -29,6 +36,9 @@ def process_batch(input_csv: str, output_csv: str) -> int:
     output_fields = list(dict.fromkeys(fields + ["outcome", "radiography_indicated", "positive_criteria", "missing_findings", "error"]))
     for row in rows:
         try:
+            if None in row:
+                row.pop(None)
+                raise ValueError("CSV row contains more fields than its header")
             result = evaluate_record(row)
             row.update({
                 "outcome": result["outcome"],
@@ -42,7 +52,8 @@ def process_batch(input_csv: str, output_csv: str) -> int:
     with destination.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=output_fields)
         writer.writeheader()
-        writer.writerows(rows)
+        for row in rows:
+            writer.writerow({key: _safe_csv_cell(row.get(key, "")) for key in output_fields})
     return len(rows)
 
 
