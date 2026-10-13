@@ -1,21 +1,39 @@
+"""Regression tests for the public Ottawa CLI entry points."""
+import csv
 import pytest
 from ottawa_rules import calculate_metrics, process_batch
 
 
-def test_ottawa_rules_single():
-    res = calculate_metrics(v1=12.0, v2=4.0)
-    assert "score" in res
-    assert "classification" in res
-    assert res["score"] > 0
+def test_single_knee_rule():
+    result = calculate_metrics(
+        site="knee", age=55, pain_present=True, acute_blunt_trauma=True,
+        reliable_exam=True, fibular_head_tenderness="no",
+        isolated_patellar_tenderness="no", cannot_flex_90="no",
+        unable_four_steps_immediately="no", unable_four_steps_at_assessment="no",
+    )
+    assert result["outcome"] == "radiography_indicated"
+    assert result["radiography_indicated"] is True
 
 
-def test_ottawa_rules_batch(tmp_path):
-    csv_in = tmp_path / "in.csv"
-    csv_out = tmp_path / "out.csv"
-    csv_in.write_text("Patient,v1,v2\nPat_001,15.0,3.0\nPat_002,5.0,1.0\n", encoding="utf-8")
-    
-    process_batch(str(csv_in), str(csv_out))
-    assert csv_out.exists()
-    content = csv_out.read_text(encoding="utf-8")
-    assert "Pat_001" in content
-    assert "score" in content
+def test_batch_csv(tmp_path):
+    source = tmp_path / "cases.csv"
+    output = tmp_path / "results.csv"
+    source.write_text(
+        "site,age,pain_present,acute_blunt_trauma,reliable_exam,"
+        "navicular_tenderness,fifth_metatarsal_base_tenderness,"
+        "unable_four_steps_immediately,unable_four_steps_at_assessment\n"
+        "midfoot,30,yes,yes,yes,no,no,no,no\n"
+        "midfoot,30,yes,yes,yes,yes,no,no,no\n",
+        encoding="utf-8",
+    )
+    assert process_batch(str(source), str(output)) == 2
+    with output.open(encoding="utf-8", newline="") as stream:
+        records = list(csv.DictReader(stream))
+    assert [row["outcome"] for row in records] == [
+        "radiography_not_indicated", "radiography_indicated"
+    ]
+
+
+def test_old_unsupported_numeric_scores_fail_closed():
+    with pytest.raises((ValueError, KeyError)):
+        calculate_metrics(v1=12, v2=4)
