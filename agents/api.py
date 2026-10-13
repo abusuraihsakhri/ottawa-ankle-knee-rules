@@ -1,6 +1,8 @@
 """FastAPI REST server: Ottawa decision support plus legacy demonstration endpoints."""
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from clinical_rules import evaluate
 from .base import AuditLogger, PHIGuard, SecurityException
@@ -78,3 +80,7 @@ def api_chat(req: ChatRequest):
 @app.get("/api/audit/logs", deprecated=True)
 def api_audit_logs():
     return {"audit_trail": AuditLogger.get_trail(), "verified": AuditLogger.verify_integrity()}
+
+
+# Registered last so API routes take precedence over the static application.
+app.mount("/", StaticFiles(directory=Path(__file__).resolve().parent.parent / "web", html=True), name="web")
